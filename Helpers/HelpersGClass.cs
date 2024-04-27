@@ -6,16 +6,31 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
-using EFTCore = GClass531;
-using EFTCoreContainer = GClass532;
+using StayInTarkov;
+
+using EFTCore = GClass536;
+using EFTCoreContainer = GClass537;
 using EFTFileSettings = BotSettingsComponents;
-using EFTSettingsGroup = GClass458;
-using EFTStatModifiersClass = GClass529;
-using EFTTime = GClass1296;
+using EFTSettingsGroup = DangerData;
+using EFTStatModifiersClass = GClass534;
+using EFTTime = GClass1303;
 using EFTSearchPoint = PlaceForCheck;
-using ScavBaseBrain = GClass290;
-using PMCBaseBrain = GClass286;
-using Aki.Reflection.Patching;
+// using ScavBaseBrain = GClass290;
+// using PMCBaseBrain = GClass286;
+// 3.8.0 backport global https://github.com/stayintarkov/StayInTarkov.Client/blob/backtrack/Aki3.8/Source/GlobalUsings.cs
+// but it doesn't appear to be correct BaseBrain25 and 29 doesn't resolve properly.
+// testing 1 n 2 for now i vaguely remember it used in some other port but I can't find it :/
+
+using ScavBaseBrain = BaseBrain1;
+using PMCBaseBrain = BaseBrain2;
+
+using BotDifficultySettingsClass = Settings9;
+using PathControllerClass = PathController;
+
+using BotEventHandler = GClass603;
+
+using StandartBotBrain = BotBrainClass;
+using GClass134 = AbstractCreateNode;
 
 ////////
 // Fixed some GClass References here, but classes were renamed in the deobfuscation, so much of this isn't necessary anymore. Need to clean this up
@@ -75,10 +90,10 @@ namespace SAIN.Helpers
                 BaseBrain baseBrain = botOwner.Brain.BaseBrain;
                 string name = botOwner.name + " " + botOwner.Profile.Info.Settings.Role.ToString();
 
-                botOwner.Brain.Agent = new AICoreAgentClass<BotLogicDecision>(
+                botOwner.Brain.Agent = new GClass26<BotLogicDecision>(
                     botOwner.BotsController.AICoreController,
                     baseBrain,
-                    GClass460.ActionsList(botOwner),
+                    AIActionNodeAssigner.ActionsList(botOwner),
                     botOwner.gameObject,
                     name,
                     new Func<BotLogicDecision, GClass134>(botOwner.Brain.method_0));

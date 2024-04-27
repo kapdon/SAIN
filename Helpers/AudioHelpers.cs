@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using static EFT.Player;
 
+using BotEventHandler = GClass603;
+
 namespace SAIN.Helpers
 {
     public class AudioHelpers

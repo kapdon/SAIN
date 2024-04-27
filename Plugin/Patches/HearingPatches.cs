@@ -12,6 +12,8 @@ using System.Reflection;
 using UnityEngine;
 using static EFT.Interactive.BetterPropagationGroups;
 
+using GClass2869 = Operation1;
+
 namespace SAIN.Patches.Hearing
 {
     public class HearingSensorPatch : ModulePatch
@@ -126,7 +128,7 @@ namespace SAIN.Patches.Hearing
         protected override MethodBase GetTargetMethod()
         {
             return AccessTools.Method(typeof(Player), "SetInHands", 
-                new[] { typeof(GrenadeClass), typeof(Callback<IHandsThrowController>) });
+                new[] { typeof(GrenadeClass), typeof(Callback<IThrowableCallback>) });
         }
 
         [PatchPrefix]
@@ -143,7 +145,7 @@ namespace SAIN.Patches.Hearing
         protected override MethodBase GetTargetMethod()
         {
             return AccessTools.Method(typeof(Player), "SetInHands", 
-                new[] { typeof(FoodClass), typeof(float), typeof(int), typeof(Callback<GInterface130>) });
+                new[] { typeof(FoodClass), typeof(float), typeof(int), typeof(Callback<IMedsController>) });
         }
 
         [PatchPrefix]
@@ -161,7 +163,7 @@ namespace SAIN.Patches.Hearing
         protected override MethodBase GetTargetMethod()
         {
             return AccessTools.Method(typeof(Player), "SetInHands", 
-                new[] { typeof(MedsClass), typeof(EBodyPart), typeof(int), typeof(Callback<GInterface130>) });
+                new[] { typeof(MedsClass), typeof(EBodyPart), typeof(int), typeof(Callback<IMedsController>) });
         }
 
         [PatchPrefix]

@@ -7,6 +7,8 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.AI;
 
+using PathControllerClass = PathController;
+
 namespace SAIN.SAINComponent.Classes.Debug
 {
     public class SAINBotUnstuckClass : SAINBase, ISAINClass

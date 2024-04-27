@@ -12,6 +12,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
 
+using BotEventHandler = GClass603;
+
 namespace SAIN.Components
 {
     public class SAINBotControllerComponent : MonoBehaviour

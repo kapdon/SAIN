@@ -15,6 +15,8 @@ using UnityEngine.AI;
 using UnityEngine.UIElements;
 using static RootMotion.FinalIK.AimPoser;
 
+using BotEventHandler = GClass603;
+
 namespace SAIN.SAINComponent.Classes
 {
     public class SAINHearingSensorClass : SAINBase, ISAINClass

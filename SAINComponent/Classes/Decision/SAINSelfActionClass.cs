@@ -125,7 +125,7 @@ namespace SAIN.SAINComponent.Classes.Decision
             Player getPlayer = Player;
             MedicalItems.Clear();
 
-            getPlayer.GClass2761_0.GetAcceptableItemsNonAlloc<MedsClass>(anySlots, MedicalItems, null);
+            // getPlayer._inventoryController.GetAcceptableItemsNonAlloc<MedsClass>(anySlots, MedicalItems, null);
             foreach (var item in MedicalItems)
             {
             }

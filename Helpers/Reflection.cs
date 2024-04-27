@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using BotDifficultySettingsClass = Settings9;
+
 namespace SAIN.Helpers
 {
     internal class Reflection

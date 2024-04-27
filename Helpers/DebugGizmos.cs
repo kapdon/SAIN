@@ -8,6 +8,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using Color = UnityEngine.Color;
 
+using CameraClass = FPSCamera;
+
 namespace SAIN.Helpers
 {
     public sealed class GUIObject

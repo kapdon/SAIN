@@ -18,6 +18,8 @@ using System.Linq;
 using SAIN.SAINComponent.Classes;
 using SAIN.SAINComponent;
 
+using StandartBotBrain = BotBrainClass;
+
 namespace SAIN.Patches.Generic
 {
     public class AimRotateSpeedPatch : ModulePatch

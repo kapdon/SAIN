@@ -7,6 +7,8 @@ using UnityEngine;
 using static EFT.Player;
 using static RootMotion.FinalIK.InteractionTrigger;
 
+using BotEventHandler = GClass603;
+
 namespace SAIN
 {
     public class PlayerWeaponInfoContainer

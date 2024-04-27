@@ -77,7 +77,7 @@ namespace SAIN.SAINComponent.Classes
             }
         }
 
-        public GInterface94 PlayerWhoLastShotMe { get; private set; }
+        public GIPlayer PlayerWhoLastShotMe { get; private set; }
 
         private void GetHitInLegs(DamageInfo damageInfo)
         {

@@ -11,6 +11,8 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
+using CameraClass = FPSCamera;
+
 namespace SAIN.Components.Extract
 {
     public class ExtractFinderComponent : MonoBehaviour

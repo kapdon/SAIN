@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
+using BotEventHandler = GClass603;
+
 namespace SAIN.SAINComponent.SubComponents
 {
     public class GrenadeTracker : MonoBehaviour
