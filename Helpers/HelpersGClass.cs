@@ -17,7 +17,9 @@ using EFTTime = GClass1303;
 using EFTSearchPoint = PlaceForCheck;
 // using ScavBaseBrain = GClass290;
 // using PMCBaseBrain = GClass286;
-// 3.8.0 backport global https://github.com/stayintarkov/StayInTarkov.Client/blob/backtrack/Aki3.8/Source/GlobalUsings.cs
+// 3.8.0 backport global https://github.com/stayintarkov/StayInTarkov.Client/blob/backtrack/Aki3.8/Source/GlobalUsings.cs says
+// using ScavBaseBrain = BaseBrain29; and
+// using PMCBaseBrain = BaseBrain25;
 // but it doesn't appear to be correct BaseBrain25 and 29 doesn't resolve properly.
 // testing 1 n 2 for now i vaguely remember it used in some other port but I can't find it :/
 
