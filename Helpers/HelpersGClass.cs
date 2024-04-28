@@ -22,9 +22,10 @@ using EFTSearchPoint = PlaceForCheck;
 // using PMCBaseBrain = BaseBrain25;
 // but it doesn't appear to be correct BaseBrain25 and 29 doesn't resolve properly.
 // testing 1 n 2 for now i vaguely remember it used in some other port but I can't find it :/
+// belettee: PMC is BaseBrain27 but Scav is BaseBrain31
 
-using ScavBaseBrain = BaseBrain1;
-using PMCBaseBrain = BaseBrain2;
+using ScavBaseBrain = BaseBrain31;
+using PMCBaseBrain = BaseBrain27;
 
 using BotDifficultySettingsClass = Settings9;
 using PathControllerClass = PathController;
