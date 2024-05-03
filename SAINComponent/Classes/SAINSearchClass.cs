@@ -204,7 +204,7 @@ namespace SAIN.SAINComponent.Classes
             if (shallSprint)
             {
                 //return SAIN.Mover.GoToPoint(destination, out _);
-                return BotOwner.BotRun.Run(destination, false);
+                return BotOwner.BotRun.Run(destination, false, SAINPlugin.LoadedPreset.GlobalSettings.General.SprintReachDistance);
             }
             else
             {
@@ -241,10 +241,18 @@ namespace SAIN.SAINComponent.Classes
             float pose;
             // Environment id of 0 means a bot is outside.
             if (shallSprint 
-                || Player.AIData.EnvironmentId == 0)
+                || Player.AIData.EnvironmentId == 0 || !SAIN.Memory.IsIndoors)
             {
-                speed = 1f;
-                pose = 1f;
+                if (SAIN.Cover.CoverPoints.Count > 5 && Time.time - BotOwner.Memory.UnderFireTime > 30f)
+                {
+                    speed = 0.5f;
+                    pose = 0.5f;
+                }
+                else
+                {
+                    speed = 1f;
+                    pose = 1f;
+                }
             }
             else if (persSettings.Sneaky)
             {

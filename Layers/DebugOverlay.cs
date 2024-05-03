@@ -11,10 +11,6 @@ namespace SAIN.Layers
 {
     public static class DebugOverlay
     {
-        private static readonly int OverlayCount = 11;
-
-        private static int Selected = 0;
-
         public static void Update()
         {
         }
@@ -75,8 +71,13 @@ namespace SAIN.Layers
                 stringBuilder.AppendLine($"Cover Points Count: [{sain.Cover.CoverPoints.Count}]");
                 stringBuilder.AppendLine($"Cover Finder State: [{sain.Cover.CurrentCoverFinderState}]");
                 stringBuilder.AppendLine($"Cover Finder Status: [{sain.Cover.CoverFinder.CurrentStatus}] Limited? [{sain.Cover.CoverFinder.ProcessingLimited}] ");
+                var members = sain.Squad.SquadInfo?.Members;
+                if (members != null && members.Count > 1)
+                {
+                    stringBuilder.AppendLine($"Squad Personality: [{sain.Squad.SquadInfo.SquadPersonality}]");
+                }
 
-                stringBuilder.AppendLine();
+                stringBuilder.AppendLine($"Indoors? {sain.Memory.IsIndoors} EnvironmentID: {sain.Player?.AIData.EnvironmentId}");
 
                 if (decisions.Main.Current != SoloDecision.None)
                 {

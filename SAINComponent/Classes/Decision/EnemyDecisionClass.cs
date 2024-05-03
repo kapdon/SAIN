@@ -150,18 +150,23 @@ namespace SAIN.SAINComponent.Classes.Decision
             {
                 return false;
             }
-            if (!enemy.IsVisible && enemy.TimeSinceSeen > SAIN.Info.FileSettings.Grenade.TimeSinceSeenBeforeThrow && enemy.RealDistance < GrenadeMaxEnemyDistance)
+            if (_nextGrenadeCheckTime < Time.time 
+                && !enemy.IsVisible 
+                && enemy.TimeSinceSeen > SAIN.Info.FileSettings.Grenade.TimeSinceSeenBeforeThrow 
+                && enemy.RealDistance < GrenadeMaxEnemyDistance)
             {
+                _nextGrenadeCheckTime = Time.time + 0.5f;
                 if (grenades.ReadyToThrow && grenades.AIGreanageThrowData.IsUpToDate())
                 {
                     grenades.DoThrow();
                     return true;
                 }
                 grenades.CanThrowGrenade(enemy.EnemyPosition + Vector3.up);
-                return false;
             }
             return false;
         }
+
+        private float _nextGrenadeCheckTime;
 
         private static readonly float RushEnemyMaxPathDistance = 10f;
         private static readonly float RushEnemyMaxPathDistanceSprint = 25f;
@@ -306,7 +311,7 @@ namespace SAIN.SAINComponent.Classes.Decision
             }
 
             var pathStatus = enemy.CheckPathDistance();
-            return (pathStatus == EnemyPathDistance.VeryClose && SAIN.Enemy.IsVisible) || SAIN.Cover.CoverInUse?.GetSpotted(SAIN) == true;
+            return (pathStatus == EnemyPathDistance.VeryClose && SAIN.Enemy.IsVisible) || SAIN.Cover.CoverInUse?.Spotted(SAIN) == true;
         }
 
         private bool StartMoveToEngage(SAINEnemy enemy)
@@ -459,7 +464,7 @@ namespace SAIN.SAINComponent.Classes.Decision
         {
             var cover = SAIN.Cover.CoverInUse;
             if (cover != null 
-                && !cover.GetSpotted(SAIN) 
+                && !cover.Spotted(SAIN) 
                 && (cover.GetPosition(SAIN) - BotOwner.Position).sqrMagnitude < HoldInCoverMaxCoverDist)
             {
                 return true;

@@ -15,14 +15,6 @@ using EFTSettingsGroup = DangerData;
 using EFTStatModifiersClass = GClass534;
 using EFTTime = GClass1303;
 using EFTSearchPoint = PlaceForCheck;
-// using ScavBaseBrain = GClass290;
-// using PMCBaseBrain = GClass286;
-// 3.8.0 backport global https://github.com/stayintarkov/StayInTarkov.Client/blob/backtrack/Aki3.8/Source/GlobalUsings.cs says
-// using ScavBaseBrain = BaseBrain29; and
-// using PMCBaseBrain = BaseBrain25;
-// but it doesn't appear to be correct BaseBrain25 and 29 doesn't resolve properly.
-// testing 1 n 2 for now i vaguely remember it used in some other port but I can't find it :/
-// belettee: PMC is BaseBrain27 but Scav is BaseBrain31
 
 using ScavBaseBrain = BaseBrain31;
 using PMCBaseBrain = BaseBrain27;
@@ -35,26 +27,13 @@ using BotEventHandler = GClass603;
 using StandartBotBrain = BotBrainClass;
 using GClass134 = AbstractCreateNode;
 
+
 ////////
 // Fixed some GClass References here, but classes were renamed in the deobfuscation, so much of this isn't necessary anymore. Need to clean this up
 ////////
 
 namespace SAIN.Helpers
 {
-    public class UpdateEFTSettingsPatch : ModulePatch
-    {
-        protected override MethodBase GetTargetMethod()
-        {
-            return AccessTools.Method(typeof(EFTFileSettings), "smethod_1");
-        }
-
-        [PatchPrefix]
-        public static void PatchPrefix(ref EFTSettingsGroup __result, BotDifficulty d, WildSpawnType role)
-        {
-            // UpdateSettingClass.ManualSettingsUpdate(role, d, __result);
-        }
-    }
-
     internal class HelpersGClass
     {
         static HelpersGClass()
@@ -153,11 +132,6 @@ namespace SAIN.Helpers
         public static readonly FieldInfo InventoryControllerProp;
         public static readonly FieldInfo PathControllerField;
 
-        public static InventoryControllerClass GetInventoryController(Player player)
-        {
-            return (InventoryControllerClass)InventoryControllerProp.GetValue(player);
-        }
-
         public static BotSettingsComponents GetEFTSettings(WildSpawnType type, BotDifficulty difficulty)
         {
             return (BotSettingsComponents)SAINPlugin.LoadedPreset.BotSettings.GetEFTSettings(type, difficulty);
@@ -168,16 +142,10 @@ namespace SAIN.Helpers
             return (PathControllerClass)PathControllerField.GetValue(botMover);
         }
 
-        public static DateTime UtcNow => EFTTime.UtcNow;
         public static EFTCoreSettings EFTCore => SAINPlugin.LoadedPreset.GlobalSettings.EFTCoreSettings;
         public static float LAY_DOWN_ANG_SHOOT => EFTCore.Core.LAY_DOWN_ANG_SHOOT;
         public static float Gravity => EFTCore.Core.G;
         public static float SMOKE_GRENADE_RADIUS_COEF => EFTCore.Core.SMOKE_GRENADE_RADIUS_COEF;
-
-        public static void PlaySound(IPlayer player, Vector3 pos, float range, AISoundType soundtype)
-        {
-            Singleton<BotEventHandler>.Instance?.PlaySound(player, pos, range, soundtype);
-        }
     }
 
     public class TemporaryStatModifiers
@@ -216,10 +184,10 @@ namespace SAIN.Helpers
         public static void UpdateCoreSettings()
         {
             var core = EFTCoreContainer.Core;
-            core.SCAV_GROUPS_TOGETHER = false;
+            core.SCAV_GROUPS_TOGETHER = true;
             core.DIST_NOT_TO_GROUP = 50f;
             core.DIST_NOT_TO_GROUP_SQR = 50f * 50f;
-            core.MIN_DIST_TO_STOP_RUN = 0f;
+            //core.MIN_DIST_TO_STOP_RUN = 0f;
             core.CAN_SHOOT_TO_HEAD = false;
             core.ARMOR_CLASS_COEF = 6f;
             core.SHOTGUN_POWER = 40f;

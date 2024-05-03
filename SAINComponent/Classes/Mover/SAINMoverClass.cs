@@ -71,8 +71,10 @@ namespace SAIN.SAINComponent.Classes.Mover
             Prone = new ProneClass(sain);
             Pose = new PoseClass(sain);
             SprintController = new SprintController(sain);
+            DogFight = new DogFight(sain);
         }
 
+        public DogFight DogFight { get; private set; }
         private SprintController SprintController;
 
         public void Init()
@@ -130,6 +132,7 @@ namespace SAIN.SAINComponent.Classes.Mover
 
         public void Dispose()
         {
+            SprintController?.Dispose();
         }
 
         public BlindFireController BlindFire { get; private set; }
@@ -162,7 +165,7 @@ namespace SAIN.SAINComponent.Classes.Mover
             {
                 if (reachDist < 0f)
                 {
-                    reachDist = BotOwner.Settings.FileSettings.Move.REACH_DIST;
+                    reachDist = SAINPlugin.LoadedPreset.GlobalSettings.General.BaseReachDistance;
                 }
                 CurrentPathStatus = BotOwner.Mover.GoToPoint(pointToGo, slowAtEnd, reachDist, false, false, true);
                 if (CurrentPathStatus == NavMeshPathStatus.PathComplete)
@@ -171,7 +174,7 @@ namespace SAIN.SAINComponent.Classes.Mover
                     {
                         Prone.SetProne(true);
                     }
-                    BotOwner.DoorOpener?.Update();
+                    SAIN.DoorOpener.Update();
                     calculating = false;
                     return true;
                 }
@@ -184,6 +187,11 @@ namespace SAIN.SAINComponent.Classes.Mover
 
             calculating = false;
             return CurrentPathStatus != NavMeshPathStatus.PathInvalid;
+        }
+
+        public void RecalcWay()
+        {
+            this.BotOwner.GoToPoint(this.BotOwner.Mover.LastDestination(), false, -1f, false, false, false, true);
         }
 
         private IEnumerator TryGoToPoint(Vector3 point, float reachDist = -1f, bool crawl = false)
@@ -206,7 +214,7 @@ namespace SAIN.SAINComponent.Classes.Mover
                     {
                         Prone.SetProne(true);
                     }
-                    BotOwner.DoorOpener?.Update();
+                    SAIN.DoorOpener.Update();
                     _coroutineRunning = false;
                     yield break;
                 }
@@ -268,7 +276,7 @@ namespace SAIN.SAINComponent.Classes.Mover
                 {
                     Prone.SetProne(true);
                 }
-                BotOwner.DoorOpener.Update();
+                SAIN.DoorOpener.Update();
                 return true;
             }
             return false;

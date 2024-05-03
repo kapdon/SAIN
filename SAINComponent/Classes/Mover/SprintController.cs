@@ -54,6 +54,20 @@ namespace SAIN.SAINComponent.Classes.Mover
 
         public void Dispose()
         {
+            if (NextCornerObject != null)
+            {
+                GameObject.Destroy(NextCornerObject);
+                NextCornerObject = null;
+                DebugGizmos.DestroyLabel(NextCornerGUIObject);
+                NextCornerGUIObject = null;
+            }
+            if (CurrentCornerObject != null)
+            {
+                GameObject.Destroy(CurrentCornerObject);
+                CurrentCornerObject = null;
+                DebugGizmos.DestroyLabel(CurrentCornerGUIObject);
+                CurrentCornerGUIObject = null;
+            }
         }
 
         private IEnumerator TrackSprint()
@@ -146,7 +160,12 @@ namespace SAIN.SAINComponent.Classes.Mover
         private GameObject NextCornerObject;
 
         private bool IsSprintEnabled => Player.IsSprintEnabled;
-        private Vector3? CurrentCorner() => _pathController?.CurrentCorner();
+
+        private Vector3? CurrentCorner()
+        {
+            return _pathController?.CurPath?.CurrentCorner();
+        }
+
         private Vector3? NextCorner()
         {
             if (_pathController.CurPath != null)

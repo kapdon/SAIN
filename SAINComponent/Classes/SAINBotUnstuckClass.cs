@@ -103,7 +103,7 @@ namespace SAIN.SAINComponent.Classes.Debug
                 && Time.time - TimeStartedMoving > 1f)
             {
                 _recalcPathTimer = Time.time + 2f;
-                BotOwner.Mover.RecalcWay();
+                SAIN.Mover.RecalcWay();
             }
         }
 
@@ -254,15 +254,8 @@ namespace SAIN.SAINComponent.Classes.Debug
 
                             if (!Player.MovementContext.TryVaulting())
                             {
-                                if (TimeSinceStuck > 5f)
-                                {
-                                    if (!HasTriedJumpOrVault)
-                                    {
-                                        HasTriedJumpOrVault = true;
-                                        TimeSinceTriedJumpOrVault = Time.time;
-                                    }
-                                    //SAIN.Mover.TryJump();
-                                }
+                                HasTriedJumpOrVault = true;
+                                TimeSinceTriedJumpOrVault = Time.time;
                             }
                             else
                             {

@@ -22,6 +22,13 @@ namespace SAIN.SAINComponent.Classes.Mover
                 ResetBlindFire();
                 return;
             }
+            if (SAINPlugin.LoadedPreset.GlobalSettings.General.LimitAIvsAI
+                && enemy.IsAI
+                && SAIN.CurrentAILimit != AILimitSetting.Close)
+            {
+                ResetBlindFire();
+                return;
+            }
 
             if (CurrentBlindFireSetting == 0)
             {
@@ -55,7 +62,7 @@ namespace SAIN.SAINComponent.Classes.Mover
             {
                 ResetBlindFire();
                 BlindFireTimer = Time.time + 0.5f;
-                SAIN.Shoot(false);
+                SAIN.Shoot(false, Vector3.zero);
             }
             else
             {
@@ -66,10 +73,10 @@ namespace SAIN.SAINComponent.Classes.Mover
                 }
 
                 Vector3 start = SAIN.Position;
-                Vector3 blindFireDirection = Vector.Rotate(targetPos - start, Vector.RandomRange(5), Vector.RandomRange(5), 0);
+                Vector3 blindFireDirection = Vector.Rotate(targetPos - start, Vector.RandomRange(3), Vector.RandomRange(3), Vector.RandomRange(3));
                 BlindFireTargetPos = blindFireDirection + start;
-                SAIN.Steering.LookToPoint(BlindFireTargetPos);
-                SAIN.Shoot(true, false, SAINComponentClass.EShootReason.Blindfire);
+                //SAIN.Steering.LookToPoint(BlindFireTargetPos);
+                SAIN.Shoot(true, BlindFireTargetPos, false, SAINComponentClass.EShootReason.Blindfire);
             }
         }
 

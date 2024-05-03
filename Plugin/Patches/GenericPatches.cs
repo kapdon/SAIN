@@ -17,6 +17,8 @@ using System;
 using System.Linq;
 using SAIN.SAINComponent.Classes;
 using SAIN.SAINComponent;
+using Audio.Data;
+using EFT.UI;
 
 using StandartBotBrain = BotBrainClass;
 
@@ -76,21 +78,6 @@ namespace SAIN.Patches.Generic
             if (SAINPlugin.GetSAIN(___botOwner_0, out var sain, nameof(GetHitPatch)))
             {
             }
-        }
-    }
-
-    internal class ForceAIBrainPatch : ModulePatch
-    {
-        protected override MethodBase GetTargetMethod() => typeof(StandartBotBrain).GetMethod("Activate");
-        [PatchPrefix]
-        public static bool PatchPrefix(ref BotOwner ___botOwner_0)
-        {
-            if (HelpersGClass.UpdateBaseBrain(___botOwner_0))
-            {
-                SAIN.Logger.NotifyWarning("Updated BaseBrain");
-                return false;
-            }
-            return true;
         }
     }
 

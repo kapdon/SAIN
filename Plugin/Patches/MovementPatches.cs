@@ -14,56 +14,29 @@ using UnityEngine.UIElements;
 
 namespace SAIN.Patches.Generic
 {
-    public class KickPatch : ModulePatch
+    public class DoorOpenerPatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod()
         {
-            return AccessTools.Method(typeof(BotDoorOpener), nameof(BotDoorOpener.Interact));
-            //return typeof(BotOwner)?.GetProperty("DoorOpener")?.PropertyType?.GetMethod("Interact", BindingFlags.Instance | BindingFlags.Public);
+            return AccessTools.Method(typeof(BotDoorOpener), nameof(BotDoorOpener.Update));
         }
 
-        public static bool Enabled = true;
+        public static bool Enabled => !ModDetection.ProjectFikaLoaded;
 
         [PatchPrefix]
-        public static void PatchPrefix(ref BotOwner ____owner, Door door, ref EInteractionType Etype)
+        public static bool PatchPrefix(ref BotOwner ____owner)
         {
-            if (____owner == null || Enabled == false)
+            if (____owner == null || ModDetection.ProjectFikaLoaded || !SAINPlugin.LoadedPreset.GlobalSettings.General.NewDoorOpening)
             {
-                return;
+                return true;
             }
 
-            EnemyInfo enemy = ____owner.Memory.GoalEnemy;
-            if (enemy == null || enemy.Person?.Transform == null)
+            if (SAINPlugin.GetSAIN(____owner, out var sain, nameof(DoorOpenerPatch)))
             {
-                if (Etype == EInteractionType.Breach)
-                {
-                    Etype = EInteractionType.Open;
-                }
-                return;
+                sain.DoorOpener.Update();
+                return false;
             }
-
-            if (Etype == EInteractionType.Open || Etype == EInteractionType.Breach)
-            {
-                bool enemyClose = Vector3.Distance(____owner.Position, enemy.CurrPosition) < 30f;
-
-                if (enemyClose || ____owner.Memory.IsUnderFire)
-                {
-                    var breakInParameters = door.GetBreakInParameters(____owner.Position);
-
-                    if (door.BreachSuccessRoll(breakInParameters.InteractionPosition))
-                    {
-                        Etype = EInteractionType.Breach;
-                    }
-                    else
-                    {
-                        Etype = EInteractionType.Open;
-                    }
-                }
-                else
-                {
-                    Etype = EInteractionType.Open;
-                }
-            }
+            return true;
         }
     }
 }

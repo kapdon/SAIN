@@ -9,6 +9,7 @@ using SAIN.SAINComponent.Classes.Decision;
 using SAIN.SAINComponent.Classes.Info;
 using SAIN.SAINComponent.Classes.Mover;
 using SAIN.SAINComponent.Classes.Talk;
+using SAIN.SAINComponent.SubComponents;
 using System;
 using System.Diagnostics;
 using UnityEngine;
@@ -73,7 +74,9 @@ namespace SAIN.SAINComponent
             {
                 NoBushESP = this.GetOrAddComponent<SAINNoBushESP>();
                 NoBushESP.Init(person.BotOwner, this);
-                FlashLight = person.Player?.gameObject?.AddComponent<SAINFlashLightComponent>();
+
+                FlashLight = person.Player.gameObject.AddComponent<SAINFlashLightComponent>();
+                SightChecker = this.GetOrAddComponent<SightCheckerComponent>();
 
                 // Must be first, other classes use it
                 Squad = new SAINSquadClass(this);
@@ -100,6 +103,7 @@ namespace SAIN.SAINComponent
                 AimDownSightsController = new AimDownSightsController(this);
                 BotHitReaction = new SAINBotHitReaction(this);
                 SpaceAwareness = new SAINBotSpaceAwareness(this);
+                DoorOpener = new SAINDoorOpener(this, person.BotOwner);
 
                 NavMeshAgent = this.GetComponent<NavMeshAgent>();
                 if (NavMeshAgent == null)
@@ -161,6 +165,11 @@ namespace SAIN.SAINComponent
 
         private void Update()
         {
+            if (BotOwner == null || this == null || Player == null)
+            {
+                Dispose();
+                return;
+            }
             if (IsDead || Singleton<GameWorld>.Instance == null)
             {
                 Dispose();
@@ -181,6 +190,11 @@ namespace SAIN.SAINComponent
                 if (AILimit.LimitAIThisFrame)
                 {
                     return;
+                }
+
+                if (BotOwner.Mover.IsMoving)
+                {
+                    DoorOpener.Update();
                 }
 
                 Search.Update();
@@ -207,10 +221,18 @@ namespace SAIN.SAINComponent
                 BotHitReaction.Update();
                 SpaceAwareness.Update();
 
-                BotOwner.DoorOpener.Update(); 
+                //BotOwner.DoorOpener.Update(); 
                 UpdateGoalTarget();
+
+                if (ManualShootReason != EShootReason.None && (!BotOwner.WeaponManager.HaveBullets || _timeStartManualShoot + 1f < Time.time))
+                {
+                    Shoot(false, Vector3.zero);
+                }
             }
         }
+
+        public SightCheckerComponent SightChecker { get; private set; }
+        public SAINDoorOpener DoorOpener { get; private set; }
 
         private Stopwatch Stopwatch = new Stopwatch();
 
@@ -282,24 +304,38 @@ namespace SAIN.SAINComponent
             }
         }
 
-        public bool Shoot(bool value, bool checkFF = true, EShootReason reason = EShootReason.None)
+        public bool Shoot(bool value, Vector3 targetPos, bool checkFF = true, EShootReason reason = EShootReason.None)
         {
+            ManualShootTargetPosition = targetPos;
             ManualShootReason = value ? reason : EShootReason.None;
 
             if (value)
             {
                 if (checkFF && !FriendlyFireClass.ClearShot)
                 {
+                    ManualShootReason = EShootReason.None;
                     BotOwner.ShootData.EndShoot();
                     return false;
                 }
+                else if (BotOwner.ShootData.Shoot())
+                {
+                    _timeStartManualShoot = Time.time;
+                    ManualShootReason = reason;
+                    return true;
+                }
                 else
                 {
-                    return BotOwner.ShootData.Shoot();
+                    ManualShootReason = EShootReason.None;
+                    return false;
                 }
             }
+            ManualShootReason = EShootReason.None;
             return false;
         }
+
+        private float _timeStartManualShoot;
+
+        public Vector3 ManualShootTargetPosition { get; private set; }
 
         public EShootReason ManualShootReason { get; private set; }
 

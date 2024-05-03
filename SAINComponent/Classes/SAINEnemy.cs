@@ -33,10 +33,16 @@ namespace SAIN.SAINComponent.Classes
         {
         }
 
+        public bool FirstContactOccured => Vision.FirstContactOccured;
+
+        public bool FirstContactReported = false;
+        public bool ShallReportRepeatContact => Vision.ShallReportRepeatContact;
+
         public void DeleteInfo(EDamageType _)
         {
             SAIN.EnemyController.RemoveEnemy(EnemyPlayer);
         }
+
 
         public bool EnemyIsSuppressed
         {
@@ -60,39 +66,34 @@ namespace SAIN.SAINComponent.Classes
                 return;
             }
 
-            bool isCurrent = IsCurrentEnemy;
-            Vision.Update(isCurrent);
-            Path.Update(isCurrent);
-
-            if (isCurrent)
+            if (EnemyInfo?.ShallKnowEnemy() == true)
             {
-                KnownPlaces.Update();
+                bool isCurrent = IsCurrentEnemy;
+                Vision.Update(isCurrent);
+                Path.Update(isCurrent);
+
+                if (isCurrent)
+                {
+                    KnownPlaces.Update();
+                }
+            }
+            else
+            {
+                Vision.UpdateVisible(false);
+                Vision.UpdateCanShoot(false);
+                Path.Clear();
             }
         }
 
         private float _nextUpdateDistTime;
 
-        public float TimeSinceSquadSensed 
-        { 
-            get
-            {
-                if (_nextCheckSenseTime < Time.time)
-                {
-                    _nextCheckSenseTime = Time.time + 1f;
-                    float min = float.MaxValue;
-                    foreach (var member in SAIN.Squad.Members)
-                    {
-
-                    }
-                }
-                return _timeSinceSquadSensed;
-            } 
+        public void UpdateKnownPosition(Vector3 position, bool arrived = false, bool seen = false)
+        {
+            KnownPlaces.AddPosition(position, arrived, seen);
+            SAIN.Squad?.SquadInfo?.ReportEnemyPosition(this, position);
         }
 
-        private float _timeSinceSquadSensed;
-        private float _nextCheckSenseTime;
-
-        public void UpdateKnownPosition(Vector3 position, bool arrived = false, bool seen = false)
+        public void EnemyPositionReported(Vector3 position, bool arrived = false, bool seen = false)
         {
             KnownPlaces.AddPosition(position, arrived, seen);
         }
@@ -105,15 +106,27 @@ namespace SAIN.SAINComponent.Classes
 
         public bool Heard { get; private set; }
 
-        public void SetHeardStatus(bool canHear, Vector3 pos)
+        public void SetHeardStatus(bool canHear, Vector3 pos, bool isTalked = false)
         {
             HeardRecently = canHear;
             if (canHear)
             {
                 UpdateKnownPosition(pos);
                 LastHeardPosition = new Vector3?(pos);
+                if (_nextSayNoise < Time.time 
+                    && (SAIN.Talk.GroupTalk.FriendIsClose 
+                        || SAIN.Equipment.HasEarPiece) 
+                    && SAIN.Squad.BotInGroup 
+                    && (SAIN.Enemy == null 
+                        || SAIN.Enemy.TimeSinceSeen > 10f))
+                {
+                    _nextSayNoise = Time.time + 8f;
+                    SAIN.Talk.TalkAfterDelay(isTalked ? EPhraseTrigger.OnEnemyConversation : EPhraseTrigger.NoisePhrase);
+                }
             }
         }
+
+        private float _nextSayNoise;
 
         public bool IsSniper { get; private set; }
 

@@ -14,6 +14,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
 using static RootMotion.FinalIK.AimPoser;
+using static UnityEngine.EventSystems.EventTrigger;
 
 using BotEventHandler = GClass603;
 
@@ -80,6 +81,15 @@ namespace SAIN.SAINComponent.Classes
                 return;
             }
             if (iPlayer != null && BotOwner.ProfileId == iPlayer.ProfileId)
+            {
+                return;
+            }
+
+            if (iPlayer != null 
+                && SAINPlugin.LoadedPreset.GlobalSettings.General.LimitAIvsAI
+                && iPlayer.IsAI
+                && SAIN.CurrentAILimit != AILimitSetting.Close 
+                && (iPlayer.Position - SAIN.Position).sqrMagnitude > 100f)
             {
                 return;
             }
@@ -298,6 +308,12 @@ namespace SAIN.SAINComponent.Classes
 
                 if (firedAtMe)
                 {
+                    try
+                    {
+                        BotOwner?.HearingSensor?.OnEnemySounHearded?.Invoke(vector, to.magnitude, type);
+                    }
+                    catch { }
+
                     SAIN?.Suppression?.AddSuppression();
                     SAIN.Memory.UnderFireFromPosition = vector;
                     try
@@ -604,11 +620,6 @@ namespace SAIN.SAINComponent.Classes
         }
 
         private float occlusionmodifier = 1f;
-
         private float raycasttimer = 0f;
-
-        public delegate void GDelegate4(Vector3 vector, float bulletDistance, AISoundType type);
-
-        public event GDelegate4 OnEnemySounHearded;
     }
 }

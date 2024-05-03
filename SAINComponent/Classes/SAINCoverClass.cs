@@ -2,6 +2,7 @@
 using EFT;
 using SAIN.Helpers;
 using SAIN.SAINComponent.SubComponents.CoverFinder;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,6 +22,27 @@ namespace SAIN.SAINComponent.Classes
         {
             CoverFinder = sain.GetOrAddComponent<CoverFinderComponent>();
             Player.HealthController.ApplyDamageEvent += OnBeingHit;
+        }
+
+        public CoverPoint FindPointInDirection(Vector3 direction, float dotThreshold = 0.33f, float minDistance = 8f)
+        {
+            Vector3 botPosition = SAIN.Position;
+            for (int i = 0; i < CoverPoints.Count; i++)
+            {
+                CoverPoint point = CoverPoints[i];
+                if (point != null && !point.Spotted(SAIN))
+                {
+                    Vector3 coverPosition = point.GetPosition(SAIN);
+                    Vector3 directionToPoint = botPosition - coverPosition;
+
+                    if (directionToPoint.sqrMagnitude > minDistance * minDistance 
+                        && Vector3.Dot(directionToPoint.normalized, direction.normalized) > dotThreshold)
+                    {
+                        return point;
+                    }
+                }
+            }
+            return null;
         }
 
         public void Init()
@@ -132,7 +154,7 @@ namespace SAIN.SAINComponent.Classes
                     CoverPoint point = CoverPoints[i];
                     if (point != null)
                     {
-                        if (point != null && point.GetSpotted(SAIN) == false)
+                        if (point != null && point.Spotted(SAIN) == false)
                         {
                             return point;
                         }
@@ -185,11 +207,12 @@ namespace SAIN.SAINComponent.Classes
                     CheckLimbTimer = Time.time + 0.1f;
                     bool cover = false;
                     var target = enemy.EnemyIPlayer.WeaponRoot.position;
-                    if (CheckLimbForCover(BodyPartType.leftLeg, target, 4f) || CheckLimbForCover(BodyPartType.leftArm, target, 4f))
+                    const float rayDistance = 10f;
+                    if (CheckLimbForCover(BodyPartType.leftLeg, target, rayDistance) || CheckLimbForCover(BodyPartType.leftArm, target, rayDistance))
                     {
                         cover = true;
                     }
-                    else if (CheckLimbForCover(BodyPartType.rightLeg, target, 4f) || CheckLimbForCover(BodyPartType.rightArm, target, 4f))
+                    else if (CheckLimbForCover(BodyPartType.rightLeg, target, rayDistance) || CheckLimbForCover(BodyPartType.rightArm, target, rayDistance))
                     {
                         cover = true;
                     }
