@@ -11,6 +11,8 @@ using System;
 using Comfort.Common;
 using static ChartAndGraph.ChartItemEvents;
 
+using BotEventHandler = GClass603;
+
 namespace SAIN.SAINComponent.Classes.Talk
 {
     public class SAINBotTalkClass : SAINBase, ISAINClass

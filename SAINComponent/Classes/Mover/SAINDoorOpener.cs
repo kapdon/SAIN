@@ -9,8 +9,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using static Class824;
+// using static Class1046;
 using static RootMotion.FinalIK.InteractionTrigger.Range;
+
+using GStruct18 = InfoStruct;
+using GClass297 = SegmentOpen;
+using GClass301 = GClass305;
 
 namespace SAIN.SAINComponent.Classes.Mover
 {
@@ -243,7 +247,7 @@ namespace SAIN.SAINComponent.Classes.Mover
             {
                 return true;
             }
-            Vector3 vector = GClass760.Rotate90(gclass.a - gclass.b, 1);
+            Vector3 vector = GClass766.Rotate90(gclass.a - gclass.b, 1);
             if (Vector3.Dot(vector, this.BotOwner.LookDirection) < 0f)
             {
                 vector = -vector;
